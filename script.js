@@ -19,12 +19,12 @@
     });
   }
 
-  // Contact form handling
+  // Contact form handling (envía mediante /api/contact con Resend)
   const form = document.getElementById("contactForm");
   const status = document.getElementById("formStatus");
 
   if (form && status) {
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const name = form.name.value.trim();
@@ -44,12 +44,32 @@
         return;
       }
 
-      status.textContent =
-        "¡Gracias, " + name + "! Tu mensaje ha sido enviado. Te responderé pronto.";
+      status.textContent = "Enviando mensaje...";
       status.style.color = "#7b61ff";
-      form.reset();
-      form.name.value = "Jareth Rosero";
-      form.email.value = "jareth.rosero08@somo.eus";
+
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, message }),
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(data.error || "No se pudo enviar el mensaje.");
+        }
+
+        status.textContent =
+          "¡Gracias, " + name + "! Tu mensaje ha sido enviado. Te responderé pronto.";
+        status.style.color = "#7b61ff";
+        form.reset();
+        form.name.value = "Jareth Rosero";
+        form.email.value = "jareth.rosero08@somo.eus";
+      } catch (error) {
+        status.textContent = "Error: " + (error.message || "intenta de nuevo más tarde.");
+        status.style.color = "#ff6a3d";
+      }
     });
   }
 })();
