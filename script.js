@@ -64,8 +64,6 @@
           "¡Gracias, " + name + "! Tu mensaje ha sido enviado. Te responderé pronto.";
         status.style.color = "#7b61ff";
         form.reset();
-        form.name.value = "Jareth Rosero";
-        form.email.value = "jareth.rosero08@somo.eus";
       } catch (error) {
         status.textContent = "Error: " + (error.message || "intenta de nuevo más tarde.");
         status.style.color = "#ff6a3d";
